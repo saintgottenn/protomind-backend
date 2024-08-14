@@ -17,17 +17,18 @@ async def transcribe(request: FileRequest):
     if not os.path.exists(request.filepath):
         return {"error": "File not found"}
 
-    text = recognize_large_file(request.filepath)
-    return {'text': text}
+    raw_text, text_with_time = _recognize_large_file(request.filepath)
+    return {'text': raw_text, 'text_with_timestamps': text_with_time}
 
-def process_chunk(chunk, sample_rate):
+def _process_chunk(chunk, sample_rate):
     rec = KaldiRecognizer(model, sample_rate)
+    rec.SetWords(True)
     if rec.AcceptWaveform(chunk):
         result = json.loads(rec.Result())
-        return result.get("text", "")
-    return ""
+        return result
+    return {}
 
-def recognize_large_file(file_path, num_threads=4):
+def _recognize_large_file(file_path, num_threads=4):
     with wave.open(file_path, "rb") as wf:
         sample_rate = wf.getframerate()
         total_samples = wf.getnframes()
@@ -41,13 +42,14 @@ def recognize_large_file(file_path, num_threads=4):
             chunks.append(chunk)
 
     full_text = ""
+    full_text_with_time = []
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
-        future_to_chunk = {executor.submit(process_chunk, chunk, sample_rate): chunk for chunk in chunks}
+        future_to_chunk = {executor.submit(_process_chunk, chunk, sample_rate): chunk for chunk in chunks}
         for future in as_completed(future_to_chunk):
-            full_text += future.result() + " "
+            rec_result = future.result()
+            raw_text = rec_result.get("text", "")
+            text_with_time = rec_result.get('result', '')
+            full_text += raw_text + " "
+            full_text_with_time.append(text_with_time)
 
-    rec = KaldiRecognizer(model, sample_rate)
-    final_result = json.loads(rec.FinalResult())
-    full_text += final_result.get("text", "")
-
-    return full_text.strip()
+    return full_text.strip(), full_text_with_time
