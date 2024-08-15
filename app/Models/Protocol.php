@@ -99,6 +99,7 @@ class Protocol extends Model implements HasMedia
         'event_start_time' => 'datetime',
         'event_date' => 'datetime',
         'final_transcript' => 'array',
+        'transcript' => 'array',
     ];
 
     public function members(): HasMany

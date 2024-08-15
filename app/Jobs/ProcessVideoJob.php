@@ -64,11 +64,9 @@ class ProcessVideoJob implements ShouldQueue
             'filepath' => $filepath,
         ]);
 
-        \Log::info('tes');
-        \Log::info($response->body());
         if($response->successful()) {
-            $transcript = json_decode($response->body())->text;
-
+            $transcript = $response->body();
+            \Log::info($transcript);
             $finalTranscript = app(ProtocolService::class)->getFinalTranscript($transcript, $this->protocol->creator_id);
             $this->protocol->update([
                'stage' => ProtocolStageEnum::SUCCESS_VIDEO_PROCESS->value,
