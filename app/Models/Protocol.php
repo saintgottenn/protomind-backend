@@ -99,8 +99,12 @@ class Protocol extends Model implements HasMedia
         'event_start_time' => 'datetime',
         'event_date' => 'datetime',
         'final_transcript' => 'array',
-        'transcript' => 'array',
     ];
+
+    public function getTranscriptAttribute($value): array
+    {
+        return json_decode($value, true) ?: [];
+    }
 
     public function members(): HasMany
     {
