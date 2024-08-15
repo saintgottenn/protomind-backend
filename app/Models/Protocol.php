@@ -101,7 +101,7 @@ class Protocol extends Model implements HasMedia
         'final_transcript' => 'array',
     ];
 
-    public function getTranscriptAttribute($value): array
+    public function getTranscriptAttribute($value)
     {
         return json_decode($value, true) ?: [];
     }
