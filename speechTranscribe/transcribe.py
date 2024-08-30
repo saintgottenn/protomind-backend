@@ -54,11 +54,20 @@ def recognize_large_file(file_path, num_threads=4):
     full_text_with_time = []
 
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
-        future_to_chunk = {executor.submit(_process_chunk, chunk, sample_rate): chunk for chunk in chunks}
+        future_to_chunk = {executor.submit(_process_chunk, chunk, sample_rate): (chunk, idx)
+                           for idx, chunk in enumerate(chunks)}
         for future in as_completed(future_to_chunk):
             rec_result = future.result()
             raw_text = rec_result.get("text", "")
             text_with_time = rec_result.get('result', [])
+
+            chunk_idx = future_to_chunk[future][1]
+            time_offset = chunk_idx * chunk_duration
+
+            for entry in text_with_time:
+                entry['start'] += time_offset
+                entry['end'] += time_offset
+
             full_text += raw_text + " "
             full_text_with_time.extend(text_with_time)
 
