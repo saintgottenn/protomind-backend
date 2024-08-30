@@ -341,8 +341,8 @@ class ProtocolController extends Controller
         if(!$protocol) {
             return ResponseService::notFound(message: 'Протокол не найден.');
         }
-
-        $finalTranscript = $this->service->getFinalTranscript($protocol->transcript, $protocol->creator_id);
+        $transcript = is_null($protocol->transcript) ? null : $protocol->transcript['text'];
+        $finalTranscript = $this->service->getFinalTranscript($transcript, $protocol->creator_id);
 
         return ResponseService::success(
             $finalTranscript

@@ -55,8 +55,9 @@ class KeywordService
                             return $item['key'] !== $deletedKeyword->title || !empty($item['value']);
                         }));
                     } else {
+                        $transcript = is_null($protocol->transcript) ? null : $protocol->transcript['text'];
                         $currentFinalTranscript = $this->protocolService->getFinalTranscript(
-                            $protocol->transcript,
+                            $transcript,
                             auth()->id(),
                             $currentFinalTranscript,
                             $updatedKeyword
