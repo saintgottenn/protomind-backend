@@ -1,0 +1,40 @@
+{
+  "authHost": "https://protomind.tech",
+  "authEndpoint": "/broadcasting/auth",
+  "clients": [
+    {
+      "appId": "ee2a5685a6d587b5",
+      "key": "148f33dd12bca522f2161fb88b6db9a50"
+    }
+  ],
+  "database": "redis",
+  "databaseConfig": {
+    "redis": {
+      "port": "6379",
+      "host": "127.0.0.1"
+    },
+    "sqlite": {
+      "databasePath": "/database/laravel-echo-server.sqlite"
+    }
+  },
+  "devMode": true,
+  "host": "",
+  "port": "6001",
+  "protocol": "https",
+  "socketio": {},
+  "secureOptions": 67108864,
+  "sslCertPath": "/etc/letsencrypt/live/protomind.tech/fullchain.pem",
+  "sslKeyPath": "/etc/letsencrypt/live/protomind.tech/privkey.pem",
+  "sslCertChainPath": "/etc/letsencrypt/live/protomind.tech/chain.pem",
+  "sslPassphrase": "",
+  "subscribers": {
+    "http": true,
+    "redis": true
+  },
+  "apiOriginAllow": {
+    "allowCors": true,
+    "allowOrigin": "*",
+    "allowMethods": "GET, POST",
+    "allowHeaders": "Origin, Content-Type, X-Auth-Token, X-Requested-With, Accept, Authorization, X-CSRF-TOKEN, X-Socket-Id"
+  }
+}
